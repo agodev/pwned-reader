@@ -12,23 +12,6 @@ namespace pwned_reader
     {
         static void Main(string[] args)
         {
-
-            using (var spinner = new ConsoleSpinner())
-            {
-                spinner.Start();
-                Thread.Sleep(10000);
-                spinner.Stop();
-                Thread.Sleep(10000);
-                spinner.Start();
-                Thread.Sleep(10000);
-                spinner.Stop();
-            }
-
-            Environment.Exit(0);
-
-
-
-
             CommandLine.Parser.Default.ParseArguments<Options>(args)
                 .WithParsed<Options>(opts => RunOptionsAndReturnExitCode(opts));
         }
@@ -36,6 +19,9 @@ namespace pwned_reader
         private static void RunOptionsAndReturnExitCode(Options opts)
         {
             var watch = Stopwatch.StartNew();
+            var spinner = new ConsoleSpinner();
+            spinner.Start();
+            
             string hashedPass = HashPassword(opts.Password);
 
             using (StreamReader str = File.OpenText(opts.InputFile))
@@ -48,6 +34,7 @@ namespace pwned_reader
                     notFound = !line.Contains(hashedPass);
                 }
 
+                spinner.Clear();
 
                 if (notFound)
                 {
